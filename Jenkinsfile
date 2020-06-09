@@ -3,7 +3,7 @@ pipeline {
     
     environment { 
 	maven = "/opt/maven/bin/mvn"
-        github_URL = "https://github.com/cssp007/NetbeansMavenProject"
+        github_URL = "https://github.com/cssp007/ORMAE"
     }
     
     
