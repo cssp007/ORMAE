@@ -65,7 +65,7 @@ pipeline {
         }
         
         
-        stage('Deploy Application in K8s Cluster') {
+        stage('Deploy tomcat in K8s Cluster') {
             steps {
                 script {
                    kubernetesDeploy(
@@ -77,7 +77,7 @@ pipeline {
 	}
 
        
-       stage('Deploy Application in K8s Cluster') {
+       stage('Deploy mysql in K8s Cluster') {
             steps {
                 script {
                    kubernetesDeploy(
@@ -89,7 +89,7 @@ pipeline {
         }
 
 
-       stage('Deploy Application in K8s Cluster') {
+       stage('Deploy fluent bit for logging in K8s Cluster') {
             steps {
                 script {
                    kubernetesDeploy(
