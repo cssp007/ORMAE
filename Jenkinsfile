@@ -65,11 +65,11 @@ pipeline {
         }
         
         
-        stage('Deploy nginx in K8s Cluster') {
+        stage('Deploy tomcat in K8s Cluster') {
             steps {
                 script {
                    kubernetesDeploy(
-				      configs: 'nginx.yaml',
+				      configs: 'tomcat.yaml',
 				      kubeconfigId: 'KUBERNETES_CONFIG'
 				   ) 
                 }
