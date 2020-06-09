@@ -22,15 +22,16 @@ spec:
         labels:
           run: tomcat
       spec:
-        containers:
-           - image: cssp007143/custom-image
-             name:  tomcat
-             resources:
-                 limits:
-                    cpu: 100m
-                 requests:
-                    cpu: 100m
-
+       containers:
+       - image: cssp007143/custom-image
+         name:  tomcat
+         resources:
+            limits:
+               cpu: 100m
+            requests:
+               cpu: 100m
+       imagePullSecrets:
+       - name: regcred 
 
 ---
 apiVersion: v1
