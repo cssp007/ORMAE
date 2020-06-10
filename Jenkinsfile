@@ -1,8 +1,7 @@
 pipeline {
     agent any
     
-    environment { 
-	maven = "/opt/maven/bin/mvn"
+    environment {
         github_URL = "https://github.com/cssp007/ORMAE"
     }
     
@@ -22,26 +21,15 @@ pipeline {
             }
          }
         
-        stage('Maven build') {
-            steps {
-                script {
-                  try {
-                    sh "${maven} clean package"
-                  }catch(err) {
-                   mail bcc: '', body: 'Unable to build war file using Maven. Error type: ${err}. Please check and fix it.', cc: '', from: '', replyTo: '', subject: 'Error while maven build', to: 'pandey.somnath007@gmail.com'
-                  }
-                    
-                }
-            }
-         }
+   
         
-        stage('Creating Tomcat docker images') {
+        stage('Creating nginx docker images') {
             steps {
                 script {
                   try {
-                    sh "docker build -t cssp007143/custom-image ."
+                    sh "docker build -t cssp007143/custom-nginx:${build_number} ."
                   }catch(err) {
-                   mail bcc: '', body: 'Unable to build war file using Maven. Error type: ${err}. Please check and fix it.', cc: '', from: '', replyTo: '', subject: 'Error while maven build', to: 'pandey.somnath007@gmail.com'
+                   mail bcc: '', body: 'Unable to create nginx image. Error type: ${err}. Please check and fix it.', cc: '', from: '', replyTo: '', subject: 'Error while creating nginx image', to: 'pandey.somnath007@gmail.com'
                   }
    
                 }
@@ -49,16 +37,16 @@ pipeline {
         }
 	    
 	
-	stage('Push tomcat image to Docker Hub') {
+	stage('Push nginx image to Docker Hub') {
             steps {
                 script {
                    try {
                     withCredentials([string(credentialsId: 'DOCKER_HUB_PASS', variable: 'DOCKER_HUB_PASS')]) {
                     sh "docker login -u cssp007143 -p $DOCKER_HUB_PASS"
                 }
-	            sh "docker push cssp007143/custom-image"
+	            sh "docker push cssp007143/custom-nginx:${build_number}"
                  }catch(err) {
-                mail bcc: '', body: 'Unable to create or push docker image to Docker Hub. Error type: ${err}. Please check and fix it.', cc: '', from: '', replyTo: '', subject: 'Error while pushing or creating docker image', to: 'pandey.somnath007@gmail.com'
+                mail bcc: '', body: 'Unable to push docker image to Docker Hub. Error type: ${err}. Please check and fix it.', cc: '', from: '', replyTo: '', subject: 'Error while pushing nginx image to Docker hub', to: 'pandey.somnath007@gmail.com'
                   }
                 }
             }
@@ -69,7 +57,7 @@ pipeline {
             steps {
                 script {
                    kubernetesDeploy(
-				      configs: 'tomcat.yaml',
+				      configs: 'nginx.yaml',
 				      kubeconfigId: 'KUBERNETES_CONFIG'
 				   ) 
                 }
@@ -82,18 +70,6 @@ pipeline {
                 script {
                    kubernetesDeploy(
                                       configs: 'mysql.yaml',
-                                      kubeconfigId: 'KUBERNETES_CONFIG'
-                                   )
-                }
-            }
-        }
-
-
-       stage('Deploy fluent bit for logging in K8s Cluster') {
-            steps {
-                script {
-                   kubernetesDeploy(
-                                      configs: 'fluent-bit-configmap.yaml',
                                       kubeconfigId: 'KUBERNETES_CONFIG'
                                    )
                 }
