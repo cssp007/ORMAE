@@ -76,5 +76,20 @@ pipeline {
             }
         }
 
+      stage('Install Rancher for managing Cluster') {
+           step {
+              script {
+                sh "docker run -d -p 8080:8080 \
+                -e CATTLE_DB_CATTLE_MYSQL_HOST=<Hostname> \
+                -e CATTLE_DB_CATTLE_MYSQL_PORT=<port> \
+                -e CATTLE_DB_CATTLE_MYSQL_NAME=<Name of Database> \
+                -e CATTLE_DB_CATTLE_USERNAME=<Username> \
+                -e CATTLE_DB_CATTLE_PASSWORD=<Password> \
+                -v /var/run/docker.sock:/var/run/docker.sock \
+                rancher/server:v1.0.2"
+                }
+           }
+      }
+
 }
 }

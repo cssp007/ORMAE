@@ -42,7 +42,8 @@ spec:
             value: root_pass
           - name: MYSQL_DATABASE
             value: "database-name"
-
+          - name: MYSQL_DATABASE
+            value: "database-name-for-rancher"
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
